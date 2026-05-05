@@ -1,0 +1,23 @@
+{
+  "name": "cse340",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Wilfredo-Marapacuto/CSE340#readme",
+  "bugs": {
+    "url": "https://github.com/Wilfredo-Marapacuto/CSE340/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wilfredo-Marapacuto/CSE340.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
