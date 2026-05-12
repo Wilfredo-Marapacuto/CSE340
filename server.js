@@ -1,4 +1,4 @@
- import express from 'express';
+import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -14,18 +14,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
-app.get('/', (req, res) => {
-  res.render('home', { title: 'Home' });
+/**
+ * Routes
+ */
+
+app.get('/', async (req, res) => {
+    const title = 'Home';
+    res.render('home', { title });
 });
 
-app.get('/organizations', (req, res) => {
-  res.render('organizations', { title: 'Our Partner Organizations' });
+app.get('/organizations', async (req, res) => {
+    const title = 'Our Partner Organizations';
+    res.render('organizations', { title });
 });
 
-app.get('/projects', (req, res) => {
-  res.render('projects', { title: 'Service Projects' });
+app.get('/projects', async (req, res) => {
+    const title = 'Service Projects';
+    res.render('projects', { title });
+});
+
+app.get('/categories', async (req, res) => {
+    const title = 'Categories';
+    res.render('categories', { title });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://127.0.0.1:${PORT}`);
+    console.log(`Server running at http://127.0.0.1:${PORT}`);
 });
