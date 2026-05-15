@@ -1,14 +1,37 @@
 <%- include('./partials/header.ejs') %>
 
 <main>
+
     <h1><%= title %></h1>
 
     <p>Here are a few of our partner organizations:</p>
+
+    <% const organizationList = typeof organizations !== 'undefined' ? organizations : []; %>
+
     <ul>
-        <li><strong>BrightFuture Builders</strong>: info@brightfuture.org</li>
-        <li><strong>GreenHarvest Growers</strong>: contact@greenharvest.org</li>
-        <li><strong>UnityServe Volunteers</strong>: hello@unityserve.org</li>
+        <% organizationList.forEach(organization => { %>
+            <li>
+                <img
+                    src="/images/<%= organization.logo_filename %>"
+                    alt="<%= organization.name %> logo"
+                    width="100"
+                >
+
+                <strong><%= organization.name %></strong>
+
+                <br>
+
+                <%= organization.description %>
+
+                <br>
+
+                <%= organization.contact_email %>
+            </li>
+
+            <br>
+        <% }); %>
     </ul>
+
 </main>
 
 <%- include('./partials/footer.ejs') %>
