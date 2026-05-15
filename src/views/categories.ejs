@@ -1,15 +1,33 @@
 <%- include('./partials/header.ejs') %>
 
 <main>
+
     <h1><%= title %></h1>
 
-    <h2>Service Project Categories</h2>
-    <ul>
-        <li>Environmental</li>
-        <li>Educational</li>
-        <li>Community Service</li>
-        <li>Health and Wellness</li>
-    </ul>
+    <h2>Available Service Categories</h2>
+
+    <% const categoryList = typeof categories !== 'undefined' ? categories : []; %>
+
+    <% if (categoryList.length > 0) { %>
+
+        <ul>
+
+            <% categoryList.forEach(category => { %>
+
+                <li>
+                    <%= category.name %>
+                </li>
+
+            <% }) %>
+
+        </ul>
+
+    <% } else { %>
+
+        <p>No categories are currently available.</p>
+
+    <% } %>
+
 </main>
 
 <%- include('./partials/footer.ejs') %>

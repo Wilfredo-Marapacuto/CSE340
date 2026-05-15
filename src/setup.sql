@@ -1,4 +1,6 @@
+DROP TABLE IF EXISTS project_category;
 DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS organization;
 
 CREATE TABLE organization (
@@ -19,6 +21,25 @@ CREATE TABLE project (
     CONSTRAINT fk_project_organization
         FOREIGN KEY (organization_id)
         REFERENCES organization(organization_id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE category (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE project_category (
+    project_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
+    PRIMARY KEY (project_id, category_id),
+    CONSTRAINT fk_project_category_project
+        FOREIGN KEY (project_id)
+        REFERENCES project(project_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_project_category_category
+        FOREIGN KEY (category_id)
+        REFERENCES category(category_id)
         ON DELETE CASCADE
 );
 
@@ -63,5 +84,34 @@ VALUES
 (3, 'Community Tutoring Night', 'Help students with homework and basic study skills.', 'UnityServe Volunteer Center', '2026-06-22'),
 (3, 'Emergency Kit Assembly', 'Assemble emergency preparedness kits for local families.', 'Provo Stake Center', '2026-06-25');
 
+INSERT INTO category (name)
+VALUES
+('Community Service'),
+('Environment'),
+('Education'),
+('Health and Wellness');
+
+INSERT INTO project_category (project_id, category_id)
+VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 2),
+(5, 1),
+
+(6, 2),
+(7, 3),
+(8, 2),
+(9, 3),
+(10, 2),
+
+(11, 1),
+(12, 1),
+(13, 4),
+(14, 3),
+(15, 4);
+
 SELECT * FROM organization;
 SELECT * FROM project;
+SELECT * FROM category;
+SELECT * FROM project_category;
