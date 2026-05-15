@@ -31,11 +31,7 @@ app.get('/', async (req, res) => {
 
 app.get('/organizations', async (req, res) => {
 
-    console.log('Organizations route was opened');
-
     const organizations = await getAllOrganizations();
-
-    console.log('Organizations data:', organizations);
 
     const title = 'Our Partner Organizations';
 
@@ -63,12 +59,10 @@ app.get('/categories', async (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
 
-    console.log(`Server running at http://127.0.0.1:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
 
-    testConnection();
+    await testConnection();
 });
-
-process.stdin.resume();
