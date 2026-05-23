@@ -37,7 +37,6 @@ app.use((req, res, next) => {
 });
 
 app.get('/', async (req, res) => {
-
     const title = 'Home';
 
     res.render('home', {
@@ -45,44 +44,83 @@ app.get('/', async (req, res) => {
     });
 });
 
-app.get('/organizations', async (req, res) => {
+app.get('/organizations', async (req, res, next) => {
+    try {
+        const organizations = await getAllOrganizations();
 
-    const organizations = await getAllOrganizations();
+        const title = 'Our Partner Organizations';
 
-    const title = 'Our Partner Organizations';
-
-    res.render('organizations', {
-        title,
-        organizations
-    });
+        res.render('organizations', {
+            title,
+            organizations
+        });
+    } catch (err) {
+        next(err);
+    }
 });
 
-app.get('/projects', async (req, res) => {
+app.get('/projects', async (req, res, next) => {
+    try {
+        const projects = await getAllProjects();
 
-    const projects = await getAllProjects();
+        const title = 'Service Projects';
 
-    const title = 'Service Projects';
-
-    res.render('projects', {
-        title,
-        projects
-    });
+        res.render('projects', {
+            title,
+            projects
+        });
+    } catch (err) {
+        next(err);
+    }
 });
 
-app.get('/categories', async (req, res) => {
+app.get('/categories', async (req, res, next) => {
+    try {
+        const categories = await getAllCategories();
 
-    const categories = await getAllCategories();
+        const title = 'Service Categories';
 
-    const title = 'Service Categories';
+        res.render('categories', {
+            title,
+            categories
+        });
+    } catch (err) {
+        next(err);
+    }
+});
 
-    res.render('categories', {
-        title,
-        categories
-    });
+// Test route for 500 errors
+app.get('/test-error', (req, res, next) => {
+    const err = new Error('This is a test error');
+    err.status = 500;
+    next(err);
+});
+
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
+
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+
+    res.status(status).render(`errors/${template}`, context);
 });
 
 app.listen(PORT, async () => {
-
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
 
