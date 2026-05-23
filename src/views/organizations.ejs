@@ -1,4 +1,4 @@
-<%- include('./partials/header.ejs') %>
+<%- include('partials/header') %>
 
 <main>
 
@@ -6,32 +6,30 @@
 
     <p>Here are a few of our partner organizations:</p>
 
-    <% const organizationList = typeof organizations !== 'undefined' ? organizations : []; %>
-
     <ul>
-        <% organizationList.forEach(organization => { %>
+
+        <% organizations.forEach(organization => { %>
+
             <li>
+
                 <img
                     src="/images/<%= organization.logo_filename %>"
                     alt="<%= organization.name %> logo"
-                    width="100"
                 >
 
-                <strong><%= organization.name %></strong>
+                <a href="/organization/<%= organization.organization_id %>">
+                    <%= organization.name %>
+                </a>
 
-                <br>
-
-                <%= organization.description %>
-
-                <br>
-
+                :
                 <%= organization.contact_email %>
+
             </li>
 
-            <br>
-        <% }); %>
+        <% }) %>
+
     </ul>
 
 </main>
 
-<%- include('./partials/footer.ejs') %>
+<%- include('partials/footer') %>
