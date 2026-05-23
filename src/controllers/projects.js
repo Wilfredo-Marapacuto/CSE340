@@ -1,10 +1,66 @@
-import { getAllProjects } from '../models/projects.js';
+import {
+    getUpcomingProjects,
+    getProjectDetails
+} from '../models/projects.js';
 
-const showProjectsPage = async (req, res) => {
-    const projects = await getAllProjects();
-    const title = 'Service Projects';
+const NUMBER_OF_UPCOMING_PROJECTS = 5;
 
-    res.render('projects', { title, projects });
+const showProjectsPage = async (req, res, next) => {
+
+    try {
+
+        const projects =
+            await getUpcomingProjects(
+                NUMBER_OF_UPCOMING_PROJECTS
+            );
+
+        const title = 'Upcoming Service Projects';
+
+        res.render('projects', {
+            title,
+            projects
+        });
+
+    } catch (err) {
+
+        next(err);
+
+    }
 };
 
-export { showProjectsPage };
+const showProjectDetailsPage = async (req, res, next) => {
+
+    try {
+
+        const projectId = req.params.id;
+
+        const project =
+            await getProjectDetails(projectId);
+
+        if (!project) {
+
+            const err = new Error('Project Not Found');
+
+            err.status = 404;
+
+            return next(err);
+        }
+
+        const title = 'Project Details';
+
+        res.render('project', {
+            title,
+            project
+        });
+
+    } catch (err) {
+
+        next(err);
+
+    }
+};
+
+export {
+    showProjectsPage,
+    showProjectDetailsPage
+};
