@@ -4,7 +4,8 @@ import {
     getUpcomingProjects,
     getProjectDetails,
     getCategoriesByProjectId,
-    createProject
+    createProject,
+    updateProject
 } from '../models/projects.js';
 
 import {
@@ -57,6 +58,16 @@ const projectValidation = [
             'Organization must be a valid integer'
         )
 ];
+
+const formatDateForInput = (projectDate) => {
+
+    const date =
+        projectDate instanceof Date
+            ? projectDate
+            : new Date(projectDate);
+
+    return date.toISOString().split('T')[0];
+};
 
 const showProjectsPage = async (req, res, next) => {
 
@@ -214,10 +225,125 @@ const processNewProjectForm = async (
     }
 };
 
+const showEditProjectForm = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const projectId = req.params.id;
+
+        const project =
+            await getProjectDetails(projectId);
+
+        if (!project) {
+
+            const err = new Error(
+                'Project Not Found'
+            );
+
+            err.status = 404;
+
+            return next(err);
+        }
+
+        const organizations =
+            await getAllOrganizations();
+
+        const title =
+            'Edit Service Project';
+
+        const projectDate =
+            formatDateForInput(
+                project.project_date
+            );
+
+        res.render('edit-project', {
+            title,
+            project,
+            projectDate,
+            organizations
+        });
+
+    } catch (err) {
+
+        next(err);
+
+    }
+};
+
+const processEditProjectForm = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const errors =
+            validationResult(req);
+
+        if (!errors.isEmpty()) {
+
+            errors.array().forEach(
+                (error) => {
+
+                    req.flash(
+                        'error',
+                        error.msg
+                    );
+
+                }
+            );
+
+            return res.redirect(
+                `/edit-project/${req.params.id}`
+            );
+        }
+
+        const projectId = req.params.id;
+
+        const {
+            title,
+            description,
+            location,
+            date,
+            organizationId
+        } = req.body;
+
+        await updateProject(
+            projectId,
+            title,
+            description,
+            location,
+            date,
+            organizationId
+        );
+
+        req.flash(
+            'success',
+            'Service project updated successfully!'
+        );
+
+        res.redirect(
+            `/project/${projectId}`
+        );
+
+    } catch (err) {
+
+        next(err);
+
+    }
+};
+
 export {
     showProjectsPage,
     showProjectDetailsPage,
     showNewProjectForm,
     processNewProjectForm,
+    showEditProjectForm,
+    processEditProjectForm,
     projectValidation
 };
