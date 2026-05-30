@@ -22,7 +22,9 @@ import {
 
 import {
     showCategoriesPage,
-    showCategoryDetailsPage
+    showCategoryDetailsPage,
+    showAssignCategoriesForm,
+    processAssignCategoriesForm
 } from './controllers/categories.js';
 
 import { testErrorPage } from './controllers/errors.js';
@@ -68,6 +70,16 @@ router.post(
 );
 
 router.get('/project/:id', showProjectDetailsPage);
+
+router.get(
+    '/assign-categories/:projectId',
+    showAssignCategoriesForm
+);
+
+router.post(
+    '/assign-categories/:projectId',
+    processAssignCategoriesForm
+);
 
 router.get('/categories', showCategoriesPage);
 
