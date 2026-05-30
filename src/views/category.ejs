@@ -6,6 +6,12 @@
 
     <h2><%= category.name %></h2>
 
+    <p>
+        <a href="/edit-category/<%= category.category_id %>">
+            Edit Category
+        </a>
+    </p>
+
     <h3>Projects in this Category</h3>
 
     <% const projectList =
