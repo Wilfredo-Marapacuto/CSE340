@@ -1,19 +1,47 @@
 import 'dotenv/config';
 
 import express from 'express';
+import session from 'express-session';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
+import flash from './src/middleware/flash.js';
 import { testConnection } from './src/models/db.js';
 import router from './src/routes.js';
 
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+/*
+ * Session Management
+ */
+app.use(
+    session({
+        secret: SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 60 * 60 * 1000
+        }
+    })
+);
+
+/*
+ * Flash Messages
+ */
+app.use(flash);
+
+/*
+ * Middleware for POST requests
+ */
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -48,12 +76,17 @@ app.use((err, req, res, next) => {
     const template = status === 404 ? '404' : '500';
 
     const context = {
-        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        title: status === 404
+            ? 'Page Not Found'
+            : 'Server Error',
         error: err.message,
         stack: err.stack
     };
 
-    res.status(status).render(`errors/${template}`, context);
+    res.status(status).render(
+        `errors/${template}`,
+        context
+    );
 });
 
 app.listen(PORT, async () => {

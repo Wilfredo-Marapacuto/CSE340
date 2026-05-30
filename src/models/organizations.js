@@ -38,7 +38,46 @@ const getOrganizationDetails = async (organizationId) => {
         : null;
 };
 
+const addOrganization = async (
+    name,
+    description,
+    contactEmail,
+    logoFilename
+) => {
+
+    const query = `
+        INSERT INTO organization (
+            name,
+            description,
+            contact_email,
+            logo_filename
+        )
+        VALUES (
+            $1,
+            $2,
+            $3,
+            $4
+        )
+        RETURNING organization_id;
+    `;
+
+    const queryParams = [
+        name,
+        description,
+        contactEmail,
+        logoFilename
+    ];
+
+    const result = await db.query(
+        query,
+        queryParams
+    );
+
+    return result.rows[0].organization_id;
+};
+
 export {
     getAllOrganizations,
-    getOrganizationDetails
+    getOrganizationDetails,
+    addOrganization
 };

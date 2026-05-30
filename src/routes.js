@@ -4,7 +4,9 @@ import { showHomePage } from './controllers/index.js';
 
 import {
     showOrganizationsPage,
-    showOrganizationDetailsPage
+    showOrganizationDetailsPage,
+    showNewOrganizationPage,
+    createOrganization
 } from './controllers/organizations.js';
 
 import {
@@ -24,6 +26,10 @@ const router = express.Router();
 router.get('/', showHomePage);
 
 router.get('/organizations', showOrganizationsPage);
+
+router.get('/new-organization', showNewOrganizationPage);
+
+router.post('/new-organization', createOrganization);
 
 router.get('/organization/:id', showOrganizationDetailsPage);
 
