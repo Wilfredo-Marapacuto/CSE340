@@ -12,7 +12,7 @@
         Return to the <a href="/">homepage</a> to continue browsing.
     </p>
 
-    <% if (NODE_ENV === 'development') { %>
+    <% if (typeof NODE_ENV !== 'undefined' && NODE_ENV === 'development') { %>
         <details open>
             <summary>Error Details (Development Only)</summary>
 
