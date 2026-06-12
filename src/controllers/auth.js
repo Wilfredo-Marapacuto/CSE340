@@ -4,7 +4,8 @@ import { body, validationResult } from 'express-validator';
 import {
     getUserByEmail,
     createUser,
-    authenticateUser
+    authenticateUser,
+    getAllUsers
 } from '../models/users.js';
 
 const registrationValidation = [
@@ -125,6 +126,32 @@ const showDashboard = (
             email: user.email
         }
     );
+};
+
+const showUsersPage = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const users =
+            await getAllUsers();
+
+        res.render(
+            'users',
+            {
+                title: 'Registered Users',
+                users
+            }
+        );
+
+    } catch (err) {
+
+        next(err);
+
+    }
 };
 
 const processRegistration = async (
@@ -284,6 +311,7 @@ export {
     showRegisterPage,
     showLoginPage,
     showDashboard,
+    showUsersPage,
     processRegistration,
     processLoginForm,
     processLogout,

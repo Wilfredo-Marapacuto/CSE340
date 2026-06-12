@@ -38,6 +38,7 @@ import {
     showRegisterPage,
     showLoginPage,
     showDashboard,
+    showUsersPage,
     processRegistration,
     processLoginForm,
     processLogout,
@@ -76,6 +77,12 @@ router.get(
     '/dashboard',
     requireLogin,
     showDashboard
+);
+
+router.get(
+    '/users',
+    requireRole('admin'),
+    showUsersPage
 );
 
 router.get('/organizations', showOrganizationsPage);
