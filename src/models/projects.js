@@ -207,6 +207,111 @@ const updateProject = async (
     return result.rows[0].project_id;
 };
 
+const addVolunteerToProject = async (
+    userId,
+    projectId
+) => {
+
+    const query = `
+        INSERT INTO volunteer_project (
+            user_id,
+            project_id
+        )
+        VALUES (
+            $1,
+            $2
+        )
+        ON CONFLICT (
+            user_id,
+            project_id
+        )
+        DO NOTHING;
+    `;
+
+    await db.query(
+        query,
+        [
+            userId,
+            projectId
+        ]
+    );
+};
+
+const removeVolunteerFromProject = async (
+    userId,
+    projectId
+) => {
+
+    const query = `
+        DELETE FROM volunteer_project
+        WHERE user_id = $1
+        AND project_id = $2;
+    `;
+
+    await db.query(
+        query,
+        [
+            userId,
+            projectId
+        ]
+    );
+};
+
+const getVolunteerProjectsByUserId = async (
+    userId
+) => {
+
+    const query = `
+        SELECT
+            p.project_id,
+            p.title,
+            p.description,
+            p.project_date,
+            p.location,
+            p.organization_id,
+            o.name AS organization_name
+        FROM volunteer_project vp
+        JOIN project p
+            ON vp.project_id = p.project_id
+        JOIN organization o
+            ON p.organization_id = o.organization_id
+        WHERE vp.user_id = $1
+        ORDER BY p.project_date ASC;
+    `;
+
+    const result = await db.query(
+        query,
+        [userId]
+    );
+
+    return result.rows;
+};
+
+const isUserVolunteeringForProject = async (
+    userId,
+    projectId
+) => {
+
+    const query = `
+        SELECT
+            user_id,
+            project_id
+        FROM volunteer_project
+        WHERE user_id = $1
+        AND project_id = $2;
+    `;
+
+    const result = await db.query(
+        query,
+        [
+            userId,
+            projectId
+        ]
+    );
+
+    return result.rows.length > 0;
+};
+
 export {
     getAllProjects,
     getProjectsByOrganizationId,
@@ -214,5 +319,9 @@ export {
     getProjectDetails,
     getCategoriesByProjectId,
     createProject,
-    updateProject
+    updateProject,
+    addVolunteerToProject,
+    removeVolunteerFromProject,
+    getVolunteerProjectsByUserId,
+    isUserVolunteeringForProject
 };

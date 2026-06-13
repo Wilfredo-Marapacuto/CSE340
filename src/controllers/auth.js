@@ -8,6 +8,10 @@ import {
     getAllUsers
 } from '../models/users.js';
 
+import {
+    getVolunteerProjectsByUserId
+} from '../models/projects.js';
+
 const registrationValidation = [
     body('name')
         .trim()
@@ -111,21 +115,36 @@ const showLoginPage = async (
     );
 };
 
-const showDashboard = (
+const showDashboard = async (
     req,
-    res
+    res,
+    next
 ) => {
 
-    const user = req.session.user;
+    try {
 
-    res.render(
-        'dashboard',
-        {
-            title: 'Dashboard',
-            name: user.name,
-            email: user.email
-        }
-    );
+        const user = req.session.user;
+
+        const volunteerProjects =
+            await getVolunteerProjectsByUserId(
+                user.user_id
+            );
+
+        res.render(
+            'dashboard',
+            {
+                title: 'Dashboard',
+                name: user.name,
+                email: user.email,
+                volunteerProjects
+            }
+        );
+
+    } catch (err) {
+
+        next(err);
+
+    }
 };
 
 const showUsersPage = async (

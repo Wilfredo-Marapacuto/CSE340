@@ -19,6 +19,8 @@ import {
     processNewProjectForm,
     showEditProjectForm,
     processEditProjectForm,
+    volunteerForProject,
+    removeVolunteerFromProjectSignup,
     projectValidation
 } from './controllers/projects.js';
 
@@ -143,7 +145,22 @@ router.post(
     processEditProjectForm
 );
 
-router.get('/project/:id', showProjectDetailsPage);
+router.post(
+    '/project/:id/volunteer',
+    requireLogin,
+    volunteerForProject
+);
+
+router.post(
+    '/project/:id/remove-volunteer',
+    requireLogin,
+    removeVolunteerFromProjectSignup
+);
+
+router.get(
+    '/project/:id',
+    showProjectDetailsPage
+);
 
 router.get('/categories', showCategoriesPage);
 
